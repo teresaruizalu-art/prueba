@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.Instalacion;
 import modelo.Reserva;
-import modelo.Usuario;
 import utilidades.Encriptacion;
 
 public class OperacionesTabla {
@@ -42,12 +41,50 @@ public class OperacionesTabla {
         return resultado;
     }
 
-    public Usuario buscarUsuario(String login) {
-        Usuario usuario = null;
+    public String buscarUsuario(String login) {
+        String dni=null;
+        String sql="select dni, login from usuarios where login=?"; //esto es la query que el programa hara a la base de datos.
+        PreparedStatement sentencia;
+        try {
+            sentencia=bd.getConexion().prepareStatement(sql);
+            sentencia.setString(1,login);
+            ResultSet registros= sentencia.executeQuery();
+            
+            if (registros.next()){
+                dni=registros.getString("dni");//entre comillas se pone el nombre de los campos de la base de datos que quiero.
+            }
+            
+            registros.close();
+            sentencia.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(OperacionesTabla.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
+        return dni;
+    }
+    
+    public String buscarNombre(String dni) {
+        String nombre=null;
+        String sql="select dni, nombre from usuarios where dni=?"; //esto es la query que el programa hara a la base de datos.
+        PreparedStatement sentencia;
+        try {
+            sentencia=bd.getConexion().prepareStatement(sql);
+            sentencia.setString(1,dni);
+            ResultSet registros= sentencia.executeQuery();
+            
+            if (registros.next()){
+                dni=registros.getString("nombre");//entre comillas se pone el nombre de los campos de la base de datos que quiero.
+            }
+            
+            registros.close();
+            sentencia.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(OperacionesTabla.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-
-        return usuario;
+        return nombre;
     }
 
     public ArrayList<Instalacion> todasInstalaciones() {
@@ -79,4 +116,5 @@ public class OperacionesTabla {
         return resultado;
     }
 
+    
 }
