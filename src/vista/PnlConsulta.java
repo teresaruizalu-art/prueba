@@ -19,8 +19,23 @@ public class PnlConsulta extends javax.swing.JPanel {
 
     public PnlConsulta() {
         initComponents();
-        
-       
+        conexion= new Conexion();
+       if (conexion.establecer()==-1)
+       {
+           JOptionPane.showMessageDialog(this,"Problema conectando", "error",JOptionPane.ERROR_MESSAGE);
+           System.exit(-1);
+           
+       }
+       else{
+           operaciones= new OperacionesTabla(conexion);}
+       modeloCombo= new DefaultComboBoxModel();
+       cmbInstalaciones.setModel(modeloCombo);
+       cargarInfoCombo();
+    }
+    
+    private void cargarInfoCombo(){
+        modeloCombo.addElement("seleccione una instalacion");
+        modeloCombo.addAll(operaciones.todasInstalaciones());
     }
 
     
