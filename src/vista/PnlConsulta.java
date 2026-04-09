@@ -27,15 +27,36 @@ public class PnlConsulta extends javax.swing.JPanel {
            
        }
        else{
-           operaciones= new OperacionesTabla(conexion);}
-       modeloCombo= new DefaultComboBoxModel();
-       cmbInstalaciones.setModel(modeloCombo);
-       cargarInfoCombo();
+           operaciones= new OperacionesTabla(conexion);
+           modeloCombo= new DefaultComboBoxModel();
+           cmbInstalaciones.setModel(modeloCombo);
+           configurarTabla();
+           cargarInfoCombo();
+    }}
+    
+    private void configurarTabla(){
+        modeloTabla=new MiModeloTabla();
+        String[]titulos={"dni","telefono","Fecha"};
+        modeloTabla.setColumnIdentifiers(titulos);
+        tblReservas.setModel(modeloTabla);
     }
     
     private void cargarInfoCombo(){
         modeloCombo.addElement("seleccione una instalacion");
         modeloCombo.addAll(operaciones.todasInstalaciones());
+    }
+    
+    private void cargarReservas(String codInstalacion){
+        ArrayList<Reserva>reservas=operaciones.todasReservas(codInstalacion);
+    if (reservas !=null){
+        for (Reserva r : reservas) {
+            Vector v = new Vector();
+            v.add(r.getDni());
+            v.add(r.getTelefono());
+            v.add(r.getFecha());
+            modeloTabla.addRow(v);
+        }
+    }
     }
 
     
@@ -213,7 +234,28 @@ public class PnlConsulta extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbInstalacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbInstalacionesActionPerformed
-        
+        int pos= cmbInstalaciones.getSelectedIndex();
+        if(pos!=0){
+            modeloTabla.setRowCount(0);
+            Instalacion i =(Instalacion)modeloCombo.getElementAt(pos);
+            lblCodigo.setText(i.getCodInstalacion());
+            lblProvincia.setText(i.getProvincia());
+            lblTelefono.setText(i.getTelefono());
+            lblPoblacion.setText(i.getPoblacion());
+            lblDetalles.setText(i.getDetalles());
+            lblPrecio.setText(String.valueOf((long)i.getPrecio()));
+            cargarReservas(i.getCodInstalacion());
+            
+        }
+        else {
+            lblCodigo.setText("");
+            lblProvincia.setText("");
+            lblTelefono.setText("");
+            lblPoblacion.setText("");
+            lblDetalles.setText("");
+            lblPrecio.setText("");
+            modeloTabla.setRowCount(0);
+        }
     }//GEN-LAST:event_cmbInstalacionesActionPerformed
 
 
